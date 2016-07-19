@@ -53,7 +53,7 @@ SimpleXML& SimpleXML::SetValue(const std::string& value) {
         return *this;
     }
 
-    const char* text = raw_xmldoc_.allocate_string(value.c_str(), strlen(value.c_str()));
+    const char* text = raw_xmldoc_.allocate_string(value.c_str(), strlen(value.c_str()) + 1);
 
     cur_node_->value(text);
 
