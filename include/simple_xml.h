@@ -21,6 +21,7 @@ class SimpleXML {
     SimpleXML& ResetAttributes();
 
     std::string GetValue();
+    std::string GetAttribute(const char* attr_name);
     std::string GetXML();
 
   private:

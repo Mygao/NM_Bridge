@@ -49,6 +49,14 @@ std::string SimpleXML::GetValue() {
     return std::string(cur_node_->value());
 }
 
+std::string SimpleXML::GetAttribute(const char* attr_name) {
+    if (cur_node_ == 0) {
+        return std::string("");
+    }
+
+    return std::string(cur_node_->first_attribute(attr_name)->value());
+}
+
 SimpleXML& SimpleXML::SetValue(const std::string& value) {
     if (cur_node_ == 0) {
         return *this;
