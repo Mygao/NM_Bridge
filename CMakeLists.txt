@@ -11,8 +11,8 @@ IF (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
 endif()
 
-find_package(ZMQ REQUIRED)
+#find_package(ZMQ REQUIRED)
 
 add_executable(NM_Bridge main.cpp src/rsi_server.cpp src/simple_xml.cpp src/front_server.cpp)
 
-target_link_libraries (NM_Bridge ${Boost_LIBRARIES} ${ZMQ_LIBRARIES})
+target_link_libraries (NM_Bridge ${Boost_LIBRARIES})
