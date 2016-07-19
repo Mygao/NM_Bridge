@@ -78,17 +78,19 @@ void FrontServer::Run() {
                 std::vector<std::string> tokens;
                 Tokenize(str_buf, tokens, ",");
 
-                copy(tokens.begin(), tokens.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+                copy(tokens.begin(), tokens.end(),
+                 std::ostream_iterator<std::string>(std::cout, "\n"));
 
                 SimpleXML xml_send_data(default_send_data);
-                std::string send_data = xml_send_data.Node("Sen").Node("AKorr").
-                                        ResetAttributes().
-                                        AppendAttribute("A1", tokens[1]).
-                                        AppendAttribute("A2", tokens[2]).
-                                        AppendAttribute("A3", tokens[3]).
-                                        AppendAttribute("A4", tokens[4]).
-                                        AppendAttribute("A5", tokens[5]).
-                                        AppendAttribute("A6", tokens[6]).GetXML();
+                std::string send_data = xml_send_data.Node("Sen").Node("AKorr")
+                                        .ResetAttributes()
+                                        .AppendAttribute("A1", tokens[1])
+                                        .AppendAttribute("A2", tokens[2])
+                                        .AppendAttribute("A3", tokens[3])
+                                        .AppendAttribute("A4", tokens[4])
+                                        .AppendAttribute("A5", tokens[5])
+                                        .AppendAttribute("A6", tokens[6])
+                                        .GetXML();
                 {
                     std::lock_guard<std::mutex> lock(msg_queue_mtx_);
                     msg_queue_.push_front(send_data);

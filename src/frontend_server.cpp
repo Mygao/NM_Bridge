@@ -8,7 +8,8 @@ FrontendServer::FrontendServer(int port)
     char port_buf[7] = "";
     sprintf(port_buf,"%d", port);
     std::string addr = "tcp://*:" + std::string(port_buf);
-    std::cout << "On FrontendServer Constructed, address is : " << addr << std::endl;
+    std::cout << "On FrontendServer Constructed, address is : ";
+    std::cout << addr << std::endl;
     socket_.bind(addr.c_str());
 }
 

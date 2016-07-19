@@ -15,7 +15,8 @@ class SimpleXML {
     SimpleXML& Node(const char* node_name);
     SimpleXML& SetValue(const std::string& value);
     SimpleXML& SetValue(const char* value);
-    SimpleXML& AppendAttribute(const std::string& attr_name, const std::string& value);
+    SimpleXML& AppendAttribute(const std::string& attr_name,
+                               const std::string& value);
     SimpleXML& AppendAttribute(const char* attr_name, const char* value);
     SimpleXML& ResetAttributes();
 

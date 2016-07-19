@@ -41,7 +41,8 @@ void RSIServer::Run() {
 
     udp::endpoint remote_endpoint;
 
-    frontend_server_thread_ = new boost::thread(boost::bind(&FrontServer::Run, &frontend_server_));
+    frontend_server_thread_
+        = new boost::thread(boost::bind(&FrontServer::Run, &frontend_server_));
     std::string last_sent_data = default_send_data;
 
     try {
@@ -69,17 +70,22 @@ void RSIServer::Run() {
 
             if (pop_data != "") {
                 SimpleXML xml_send_data(pop_data);
-                std::string send_data = xml_send_data.Node("Sen").Node("IPOC").SetValue(recv_ipoc).GetXML();
-
+                std::string send_data = xml_send_data.Node("Sen")
+                                                     .Node("IPOC")
+                                                     .SetValue(recv_ipoc)
+                                                     .GetXML();
                 last_sent_data = send_data;
-                socket_->send_to(boost::asio::buffer(send_data), remote_endpoint,
-                    0, ignored_error);
+                socket_->send_to(boost::asio::buffer(send_data),
+                                 remote_endpoint, 0, ignored_error);
             }
             else {
                 SimpleXML xml_send_data(last_sent_data);
-                last_sent_data = xml_send_data.Node("Sen").Node("IPOC").SetValue(recv_ipoc).GetXML();
-                socket_->send_to(boost::asio::buffer(last_sent_data), remote_endpoint,
-                    0, ignored_error);
+                last_sent_data = xml_send_data.Node("Sen")
+                                              .Node("IPOC")
+                                              .SetValue(recv_ipoc)
+                                              .GetXML();
+                socket_->send_to(boost::asio::buffer(last_sent_data),
+                                 remote_endpoint, 0, ignored_error);
             }
 
         }

@@ -3,7 +3,8 @@
 #include <string.h>
 #include <iostream>
 
-SimpleXML::SimpleXML(const std::string source) : cur_node_(0), string_buf_(source),
+SimpleXML::SimpleXML(const std::string source)
+  : cur_node_(0), string_buf_(source),
     vector_buf_(source.begin(), source.end()) {
     vector_buf_.push_back('\0');
     raw_xmldoc_.parse</*rapidxml::parse_non_destructive |*/
@@ -53,7 +54,8 @@ SimpleXML& SimpleXML::SetValue(const std::string& value) {
         return *this;
     }
 
-    const char* text = raw_xmldoc_.allocate_string(value.c_str(), strlen(value.c_str()) + 1);
+    const char* text = raw_xmldoc_.allocate_string(value.c_str(),
+                                                   strlen(value.c_str()) + 1);
 
     cur_node_->value(text);
 
@@ -73,24 +75,28 @@ SimpleXML& SimpleXML::SetValue(const char* value) {
     return *this;
 }
 
-SimpleXML& SimpleXML::AppendAttribute(const std::string& attr_name, const std::string& value) {
+SimpleXML& SimpleXML::AppendAttribute(const std::string& attr_name,
+                                      const std::string& value) {
     if (cur_node_ == 0) {
         return *this;
     }
 
-    rapidxml::xml_attribute<>* attr = raw_xmldoc_.allocate_attribute(attr_name.c_str(), value.c_str());
+    rapidxml::xml_attribute<>* attr
+        = raw_xmldoc_.allocate_attribute(attr_name.c_str(), value.c_str());
 
     cur_node_->append_attribute(attr);
 
     return *this;
 }
 
-SimpleXML& SimpleXML::AppendAttribute(const char* attr_name, const char* value) {
+SimpleXML& SimpleXML::AppendAttribute(const char* attr_name,
+                                      const char* value) {
     if (cur_node_ == 0) {
         return *this;
     }
 
-    rapidxml::xml_attribute<>* attr = raw_xmldoc_.allocate_attribute(attr_name, value);
+    rapidxml::xml_attribute<>* attr
+        = raw_xmldoc_.allocate_attribute(attr_name, value);
 
     cur_node_->append_attribute(attr);
 
