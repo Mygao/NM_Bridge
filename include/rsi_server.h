@@ -19,9 +19,9 @@ class RSIServer {
 
     boost::asio::ip::udp::socket* socket_;
     boost::asio::io_service io_service_;
-    boost::thread* frontend_server_thread_;
+    boost::thread* front_server_thread_;
 
-    FrontServer frontend_server_;
+    FrontServer front_server_;
 
 };
 

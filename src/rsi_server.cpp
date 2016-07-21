@@ -17,7 +17,7 @@ std::string default_send_data = "<Sen Type=\"ImFree\">\
 </Sen>";
 
 RSIServer::RSIServer(int port)
-    : port_(port), frontend_server_(50050) {
+    : port_(port), front_server_(50050) {
     try {
         socket_ = new udp::socket(io_service_, udp::endpoint(udp::v4(), port));
     }
@@ -27,8 +27,8 @@ RSIServer::RSIServer(int port)
 }
 
 RSIServer::~RSIServer() {
-    frontend_server_.Stop();
-    frontend_server_thread_->join();
+    front_server_.Stop();
+    front_server_thread_->join();
     socket_->close();
     delete socket_;
     socket_ = 0;
@@ -41,8 +41,8 @@ void RSIServer::Run() {
 
     udp::endpoint remote_endpoint;
 
-    frontend_server_thread_
-        = new boost::thread(boost::bind(&FrontServer::Run, &frontend_server_));
+    front_server_thread_
+        = new boost::thread(boost::bind(&FrontServer::Run, &front_server_));
     std::string last_sent_data = default_send_data;
 
     try {
@@ -66,7 +66,7 @@ void RSIServer::Run() {
             std::string recv_ipoc(xml_recv_data.Node("IPOC").GetValue());
 
             //Pump message from buffering module
-            std::string pop_data = frontend_server_.PopMsgQueue();
+            std::string pop_data = front_server_.PopMsgQueue();
 
             if (pop_data != "") {
                 SimpleXML xml_send_data(pop_data);
