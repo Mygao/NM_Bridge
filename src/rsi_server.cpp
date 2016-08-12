@@ -1,19 +1,20 @@
-#include "../include/rsi_server.h"
+#include "rsi_server.h"
 
 #include <iostream>
 
-#include "../include/simple_xml.h"
+#include "message.h"
+#include "simple_xml.h"
 
 using boost::asio::ip::udp;
 
 const int kBufferSize = 1024;
 
 std::string default_send_data = "<Sen Type=\"ImFree\">\
-  <EStr>KRCnexxt - RSI Object ST_ETHERNET</EStr>\
-  <AKorr A1=\"0.0\" A2=\"0.0\" A3=\"0.0\" A4=\"0.0\" A5=\"0.0\" A6=\"0.0\" />\
-  <Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\" />\
-  <DiO>125</DiO>\
-  <IPOC>0000000000</IPOC>\
+<EStr>KRCnexxt - RSI Object ST_ETHERNET</EStr>\
+<AKorr A1=\"0.0\" A2=\"0.0\" A3=\"0.0\" A4=\"0.0\" A5=\"0.0\" A6=\"0.0\" />\
+<Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\" />\
+<DiO>125</DiO>\
+<IPOC>0000000000</IPOC>\
 </Sen>";
 
 RSIServer::RSIServer(int port)
@@ -57,16 +58,29 @@ void RSIServer::Run() {
             if (error && error != boost::asio::error::message_size)
                 throw boost::system::system_error(error);
 
-            std::string message(recv_buf.begin(),
+            std::string recv_data(recv_buf.begin(),
                 recv_buf.begin() + transferred_size);
 
-            //std::cout << message << std::endl;
+			SimpleXML xml_recv_data(recv_data);
+            std::string recv_ipoc(xml_recv_data.Node("Rob").Node("IPOC").GetValue());
+			xml_recv_data.GetXML();
 
-            SimpleXML xml_recv_data(message);
-            std::string recv_ipoc(xml_recv_data.Node("IPOC").GetValue());
-
+			//Set Robot's current axis angles to front server.
+			//std::cout << xml_recv_data.Node("Rob").Node("AIPos").GetAttribute("A1") << std::endl;
+			xml_recv_data.Node("Rob").Node("AIPos");
+			front_server_.SetRobotAxisAngles(FrontServer::RobotAxisAngles(
+						strtof(xml_recv_data.GetAttribute("A1").c_str(), NULL),
+						strtof(xml_recv_data.GetAttribute("A2").c_str(), NULL),
+						strtof(xml_recv_data.GetAttribute("A3").c_str(), NULL),
+						strtof(xml_recv_data.GetAttribute("A4").c_str(), NULL),
+						strtof(xml_recv_data.GetAttribute("A5").c_str(), NULL),
+						strtof(xml_recv_data.GetAttribute("A6").c_str(), NULL)
+					)
+				);
             //Pump message from buffering module
-            std::string pop_data = front_server_.PopMsgQueue();
+            Message message = front_server_.PopMsgQueue();
+
+			std::string pop_data = message.GetData();
 
             if (pop_data != "") {
                 SimpleXML xml_send_data(pop_data);

@@ -5,6 +5,7 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
+#include "macros.h"
 #include "front_server.h"
 
 class RSIServer {
@@ -23,6 +24,7 @@ class RSIServer {
 
     FrontServer front_server_;
 
+	DISALLOW_COPY_AND_ASSIGN(RSIServer);
 };
 
 #endif //RSI_SERVER_H_
